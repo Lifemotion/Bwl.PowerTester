@@ -2,7 +2,7 @@
 
 #define DEV_NAME "BwlPowTst1.0      "
 #define ADC_ADJ ADC_ADJUST_RIGHT
-#define ADC_REF ADC_REFS_INTERNAL_2_56
+#define ADC_REF ADC_REFS_INTERNAL_1_1
 #define ADC_CLK ADC_PRESCALER_128
 
 #include "board/board.h"
@@ -63,6 +63,19 @@ void sserial_process_request(unsigned char portindex)
 	}
 }
 
+float adc_get_voltage()
+{
+	adc_init(4,ADC_ADJ,ADC_REF,ADC_CLK);	
+	int result0=adc_read_average(256);
+	float result=result0*1.1/1024.0*69.0;
+	return result;
+}
+
+void power_open(unsigned char state)
+{
+	setbit(DDRD,4,1);setbit(PORTD,4,state);
+}
+
 int main(void)
 {
 	wdt_enable(WDTO_8S);
@@ -74,17 +87,27 @@ int main(void)
 	
 	//lcd_power_reset();
 	lcd_init();
+	lcd_init();
 	
 	for (int i=0; i<16; i++)
 	{
 		lcd_line_1[i]='0'+i;
 		lcd_line_2[i]='a'+i;
 	}
-	lcd_writebuffer();
 	
+	power_open(1);
+	
+	lcd_writebuffer();	
 	while(1)
 	{
-		sserial_poll_uart(UART_USB);
+		//sserial_poll_uart(UART_USB);
+		float volt=adc_get_voltage();
+		string_clear();
+		string_add_string("Voltage: ");
+		string_add_float(volt,2);
+		for (int i=0; i<16; i++)	lcd_line_2[i]=string_buffer[i];
+		lcd_writebuffer();
+		_delay_ms(500);
 		wdt_reset();
 	}
 }
