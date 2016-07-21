@@ -79,7 +79,7 @@ void lcd_setup()
 	_lcd_write(0,0b00000010,0);_delay_us(LCD_DELAY_INIT);	
 	//0 0 0 0 0 1 i/d s/h
 	_lcd_write(0,0b00000110,0);_delay_us(LCD_DELAY_INIT);
-	//_delay_ms(1000);
+//_delay_ms(1000);
 }
 
 void lcd_init()

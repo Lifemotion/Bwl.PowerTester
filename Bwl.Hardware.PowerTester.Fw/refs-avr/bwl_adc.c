@@ -50,3 +50,14 @@ int adc_read_average(int count )
 	}
 	return sum/count;
 }
+
+float adc_read_average_float(int count )
+{
+	volatile float sum=0.0;
+	for (int i=0; i<count; i++)
+	{
+		sum+=(adc_read_once());
+	}
+	sum=sum/count;
+	return sum;
+}

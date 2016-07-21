@@ -3,9 +3,9 @@
 #include "board/board.h"
 
 //delays in us
-#define LCD_DELAY_PULSE 50
-#define LCD_DELAY_SYMBOLS 50
-#define LCD_DELAY_INIT 200
+#define LCD_DELAY_PULSE 20
+#define LCD_DELAY_SYMBOLS 20
+#define LCD_DELAY_INIT 100
 
 #define LCD_LINE_LENGTH 16
 unsigned char lcd_line_1[LCD_LINE_LENGTH];

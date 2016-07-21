@@ -14,6 +14,7 @@ void adc_init (unsigned char mux, unsigned char adjust, unsigned char refs, unsi
 void adc_off (void);
 unsigned int adc_read_once (void);
 int adc_read_average(int count);
+float adc_read_average_float(int count );
 
 #define ADC_MUX_ADC0 0 //Current out
 #define ADC_MUX_ADC1 1 //USB Vin
