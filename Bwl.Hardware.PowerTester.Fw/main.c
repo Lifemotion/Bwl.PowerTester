@@ -157,7 +157,7 @@ float relay_get_resistance(int relay_code)
 	}else
 	{
 		float resistance= 1.0/rev_sum;
-		return resistance;	
+		return resistance;
 	}
 }
 
@@ -216,11 +216,11 @@ void show_resistanse_voltage_current(float resistance, float voltage)
 		string_add_string("I=");
 		float curr=voltage/resistance;
 		string_add_float(curr,2);
-			
+		
 		string_add_string(", P=");
 		float pow=voltage*curr;
 		string_add_float(pow,2);
-		}	
+	}
 	copy_string_to_line(2);
 	lcd_writebuffer();
 }
@@ -243,7 +243,7 @@ void manual_mode()
 		show_resistanse(manual_relaycode);
 		_delay_ms(200);
 	}
-		
+	
 	if (get_button_2())
 	{
 		float volt=meashure_voltage(manual_relaycode);
@@ -251,13 +251,13 @@ void manual_mode()
 		show_resistanse_voltage_current(resist,volt);
 		_delay_ms(200);
 	}
-				
+	
 	/*if (get_button_3())
 	{
-		manual_relaycode-=1;
-		show_resistanse(manual_relaycode);
-		_delay_ms(200);
-	}*/	
+	manual_relaycode-=1;
+	show_resistanse(manual_relaycode);
+	_delay_ms(200);
+	}*/
 }
 
 void automatic_mode(float drop_level)
@@ -269,6 +269,7 @@ void automatic_mode(float drop_level)
 	copy_string_to_line(1);
 	float init_volt=adc_get_voltage();
 	float volt=init_volt;
+	float resist=-1;
 	string_clear();
 	string_add_string("Initial U=");
 	string_add_float(init_volt,2);
@@ -278,17 +279,53 @@ void automatic_mode(float drop_level)
 	_delay_ms(500);
 	//increasing load
 	int relay=0;
-	while (volt>init_volt*drop_level)
+	float last_volt=0.0, last_resist=0.0;
+	while ((volt>init_volt*drop_level)&&(relay<500))
 	{
 		relay++;
 		if (relay>10) relay++;
-		if (relay>30) relay++;
+		if (relay>40) relay++;
+		if (relay>60) relay++;
+		if (relay>120) relay++;
+		if (relay>160) relay++;
+		if (relay>200) relay++;
+		if (relay>250) relay++;
+		if (relay>250) relay++;
+		last_volt=volt;
+		last_resist=resist;
+		show_resistanse_voltage_current(last_resist,last_volt);
 		
 		volt=meashure_voltage(relay);
-		float resist=relay_get_resistance(relay);
-		show_resistanse_voltage_current(resist,volt);
+			volt=meashure_voltage(relay);
+		volt=meashure_voltage(relay);
+		resist=relay_get_resistance(relay);
 		_delay_ms(50);
-	}	
+	}
+	
+	float curr=last_volt/last_resist;
+	float pow=last_volt*curr;
+	if (relay<500)
+	{
+		string_clear();
+		string_add_string("U dropped-> ");
+		string_add_float(drop_level,2);
+		copy_string_to_line(1);
+
+	}else
+	{
+		string_clear();
+		string_add_string("U NOT drop-> ");
+		string_add_float(drop_level,2);
+		copy_string_to_line(1);
+		string_clear();
+	}
+	string_clear();
+	string_add_string("I=");
+	string_add_float(curr,1);
+	string_add_string(", P=");
+	string_add_float(pow,1);
+	copy_string_to_line(2);
+	lcd_writebuffer();
 }
 
 int main(void)
@@ -330,7 +367,7 @@ int main(void)
 		if (get_button_2())
 		{
 			automatic_mode(0.95);
-		}		
+		}
 		wdt_reset();
 	}
 }
