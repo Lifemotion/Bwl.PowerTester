@@ -301,9 +301,11 @@ void automatic_mode(float drop_level)
 		resist=relay_get_resistance(relay);
 		_delay_ms(50);
 	}
-	
-	float curr=last_volt/last_resist;
-	float pow=last_volt*curr;
+	//float curr=last_volt/last_resist;
+	//float pow=last_volt*curr;
+		
+	float curr=volt/resist;
+	float pow=volt*curr;
 	if (relay<500)
 	{
 		string_clear();
