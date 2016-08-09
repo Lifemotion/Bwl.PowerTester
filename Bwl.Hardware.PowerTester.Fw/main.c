@@ -66,7 +66,7 @@ void sserial_process_request(unsigned char portindex)
 float adc_get_voltage()
 {
 	adc_init(4,ADC_ADJ,ADC_REF,ADC_CLK);
-	float result0=adc_read_average_float(8);
+	float result0=adc_read_average_float(64);
 	float result=result0*1.1/1024.0*69.0;
 	return result;
 }
@@ -283,7 +283,7 @@ void automatic_mode(float drop_level)
 	while ((volt>init_volt*drop_level)&&(relay<500))
 	{
 		relay++;
-		if (relay>10) relay++;
+		//if (relay>10) relay++;
 		if (relay>40) relay++;
 		if (relay>60) relay++;
 		if (relay>120) relay++;
@@ -295,8 +295,8 @@ void automatic_mode(float drop_level)
 		last_resist=resist;
 		show_resistanse_voltage_current(last_resist,last_volt);
 		
+		//volt=meashure_voltage(relay);
 		volt=meashure_voltage(relay);
-			volt=meashure_voltage(relay);
 		volt=meashure_voltage(relay);
 		resist=relay_get_resistance(relay);
 		_delay_ms(50);
@@ -323,7 +323,7 @@ void automatic_mode(float drop_level)
 	}
 	string_clear();
 	string_add_string("I=");
-	string_add_float(curr,1);
+	string_add_float(curr,2);
 	string_add_string(", P=");
 	string_add_float(pow,1);
 	copy_string_to_line(2);
