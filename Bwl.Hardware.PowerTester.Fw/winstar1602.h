@@ -2,6 +2,20 @@
 
 #include "board/board.h"
 
+#define RS_PORT PORTA
+#define D7_PORT PORTD
+#define D6_PORT PORTC
+#define D5_PORT PORTC
+#define D4_PORT PORTC
+#define E_PORT PORTC
+
+#define D7_PIN 7
+#define D6_PIN 0
+#define D5_PIN 1
+#define D4_PIN 6
+#define RS_PIN 7
+#define E_PIN 7
+
 //delays in us
 #define LCD_DELAY_PULSE 20
 #define LCD_DELAY_SYMBOLS 20

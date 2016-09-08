@@ -23,31 +23,31 @@ const char charTable[256] = {
 
 void _lcd_write(char rs, unsigned char byte, char repeatfirst)
 {
-	setbit(DDRA,7,1);setbit(PORTA,7,rs);//rs 0-instr 1-data
-	setbit(DDRC,7,1);setbit(PORTC,7,0);//e
+	setbit(RS_PORT,RS_PIN,1);setbit(RS_PORT, RS_PIN, rs);//rs 0-instr 1-data
+	setbit(E_PORT, E_PIN, 1);setbit(E_PORT, E_PIN, 0);//e
 	
-	setbit(DDRD,7,1);setbit(PORTD,7,byte&128);//d7
-	setbit(DDRC,0,1);setbit(PORTC,0,byte&64);
-	setbit(DDRC,1,1);setbit(PORTC,1,byte&32);
-	setbit(DDRC,6,1);setbit(PORTC,6,byte&16);
+	setbit(D7_PORT, D7_PIN,1); setbit(D7_PORT, D7_PIN,byte&128);//d7
+	setbit(D6_PORT, D6_PIN,1); setbit(D6_PORT, D6_PIN,byte&64);
+	setbit(D5_PORT, D5_PIN,1); setbit(D5_PORT, D5_PIN,byte&32);
+	setbit(D4_PORT, D4_PIN,1); setbit(D4_PORT, D4_PIN,byte&16);
 	
 	_delay_us(LCD_DELAY_PULSE);
-	setbit(PORTC,7,1);//e
+	setbit(E_PORT, E_PIN, 1);//e
 	_delay_us(LCD_DELAY_PULSE);
-	setbit(PORTC,7,0);//e
+	setbit(E_PORT, E_PIN, 0);//e
 	_delay_us(LCD_DELAY_PULSE);
 	
 	if (repeatfirst)
 	{
-		setbit(DDRD,7,1);setbit(PORTD,7,byte&128);//d7
-		setbit(DDRC,0,1);setbit(PORTC,0,byte&64);
-		setbit(DDRC,1,1);setbit(PORTC,1,byte&32);
-		setbit(DDRC,6,1);setbit(PORTC,6,byte&16);
+	setbit(D7_PORT, D7_PIN,1); setbit(D7_PORT, D7_PIN,byte&128);//d7
+	setbit(D6_PORT, D6_PIN,1); setbit(D6_PORT, D6_PIN,byte&64);
+	setbit(D5_PORT, D5_PIN,1); setbit(D5_PORT, D5_PIN,byte&32);
+	setbit(D4_PORT, D4_PIN,1); setbit(D4_PORT, D4_PIN,byte&16);
 	
 		_delay_us(LCD_DELAY_PULSE);
-		setbit(PORTC,7,1);//e
+		setbit(E_PORT, E_PIN, 1);//e
 		_delay_us(LCD_DELAY_PULSE);
-		setbit(PORTC,7,0);//e		
+		setbit(E_PORT, E_PIN, 0);//e		
 		_delay_us(LCD_DELAY_PULSE);
 	}
 		
@@ -57,9 +57,9 @@ void _lcd_write(char rs, unsigned char byte, char repeatfirst)
 	setbit(DDRC,6,1);setbit(PORTC,6,byte&1);
 	
 	_delay_us(LCD_DELAY_PULSE);
-	setbit(PORTC,7,1);//e
+	setbit(E_PORT, E_PIN, 1);//e
 	_delay_us(LCD_DELAY_PULSE);
-	setbit(PORTC,7,0);//e
+	setbit(E_PORT, E_PIN, 0);//e
 	_delay_us(LCD_DELAY_PULSE);
 	
 	_delay_us(LCD_DELAY_SYMBOLS);

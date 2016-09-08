@@ -81,28 +81,28 @@ float adc_get_current()
 
 void power_open(unsigned char state)
 {
-	setbit(DDRD,4,1);setbit(PORTD,4,state);
+	setbit(DDRA,5,1);setbit(PORTA,5,state);
 }
 
 byte get_button_1()
+{
+	setbit(DDRD,4,0);
+	setbit(PORTD,4,1);
+	return getbit(PIND,4)==0;
+}
+
+byte get_button_2()
 {
 	setbit(DDRD,3,0);
 	setbit(PORTD,3,1);
 	return getbit(PIND,3)==0;
 }
 
-byte get_button_2()
-{
-	setbit(DDRA,2,0);
-	setbit(PORTA,2,1);
-	return getbit(PINA,2)==0;
-}
-
 byte get_button_3()
 {
-	setbit(DDRA,1,0);
-	setbit(PORTA,1,1);
-	return getbit(PINA,1)==0;
+	setbit(DDRD,5,0);
+	setbit(PORTD,5,1);
+	return getbit(PIND,5)==0;
 }
 
 void copy_string_to_line(char line)
@@ -344,17 +344,17 @@ int main(void)
 	set_relay(256);_delay_ms(2000);
 	set_relay(0);
 	*/
-	get_button_1();
-	get_button_2();
+	//get_button_1();
+	//get_button_2();
 	//wdt_enable(WDTO_8S);
-	uart_init_withdivider(UART_USB,UBRR_VALUE);
-	sserial_find_bootloader();
-	sserial_set_devname(DEV_NAME);
-	sserial_append_devname(15,12,__DATE__);
-	sserial_append_devname(27,8,__TIME__);
-	
-	lcd_init();
+	//uart_init_withdivider(UART_USB,UBRR_VALUE);
+	//sserial_find_bootloader();
+	//sserial_set_devname(DEV_NAME);
+	//sserial_append_devname(15,12,__DATE__);
+	//sserial_append_devname(27,8,__TIME__);
 	power_open(1);
+	lcd_init();
+	
 	string_clear();
 	string_add_string("Power Tester 1.0 ");
 	copy_string_to_line(1);
