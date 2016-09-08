@@ -9,6 +9,13 @@
 #define D4_PORT PORTC
 #define E_PORT PORTC
 
+#define RS_DDR DDRA
+#define D7_DDR DDRD
+#define D6_DDR DDRC
+#define D5_DDR DDRC
+#define D4_DDR DDRC
+#define E_DDR DDRC
+
 #define D7_PIN 7
 #define D6_PIN 0
 #define D5_PIN 1

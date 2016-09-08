@@ -23,13 +23,13 @@ const char charTable[256] = {
 
 void _lcd_write(char rs, unsigned char byte, char repeatfirst)
 {
-	setbit(RS_PORT,RS_PIN,1);setbit(RS_PORT, RS_PIN, rs);//rs 0-instr 1-data
-	setbit(E_PORT, E_PIN, 1);setbit(E_PORT, E_PIN, 0);//e
+	setbit(RS_DDR,RS_PIN,1);setbit(RS_PORT, RS_PIN, rs);//rs 0-instr 1-data
+	setbit(E_DDR, E_PIN, 1);setbit(E_PORT, E_PIN, 0);//e
 	
-	setbit(D7_PORT, D7_PIN,1); setbit(D7_PORT, D7_PIN,byte&128);//d7
-	setbit(D6_PORT, D6_PIN,1); setbit(D6_PORT, D6_PIN,byte&64);
-	setbit(D5_PORT, D5_PIN,1); setbit(D5_PORT, D5_PIN,byte&32);
-	setbit(D4_PORT, D4_PIN,1); setbit(D4_PORT, D4_PIN,byte&16);
+	setbit(D7_DDR, D7_PIN,1); setbit(D7_PORT, D7_PIN,byte&128);//d7
+	setbit(D6_DDR, D6_PIN,1); setbit(D6_PORT, D6_PIN,byte&64);
+	setbit(D5_DDR, D5_PIN,1); setbit(D5_PORT, D5_PIN,byte&32);
+	setbit(D4_DDR, D4_PIN,1); setbit(D4_PORT, D4_PIN,byte&16);
 	
 	_delay_us(LCD_DELAY_PULSE);
 	setbit(E_PORT, E_PIN, 1);//e
@@ -39,10 +39,10 @@ void _lcd_write(char rs, unsigned char byte, char repeatfirst)
 	
 	if (repeatfirst)
 	{
-	setbit(D7_PORT, D7_PIN,1); setbit(D7_PORT, D7_PIN,byte&128);//d7
-	setbit(D6_PORT, D6_PIN,1); setbit(D6_PORT, D6_PIN,byte&64);
-	setbit(D5_PORT, D5_PIN,1); setbit(D5_PORT, D5_PIN,byte&32);
-	setbit(D4_PORT, D4_PIN,1); setbit(D4_PORT, D4_PIN,byte&16);
+		setbit(D7_DDR, D7_PIN,1); setbit(D7_PORT, D7_PIN,byte&128);//d7
+		setbit(D6_DDR, D6_PIN,1); setbit(D6_PORT, D6_PIN,byte&64);
+		setbit(D5_DDR, D5_PIN,1); setbit(D5_PORT, D5_PIN,byte&32);
+		setbit(D4_DDR, D4_PIN,1); setbit(D4_PORT, D4_PIN,byte&16);
 	
 		_delay_us(LCD_DELAY_PULSE);
 		setbit(E_PORT, E_PIN, 1);//e
@@ -51,10 +51,10 @@ void _lcd_write(char rs, unsigned char byte, char repeatfirst)
 		_delay_us(LCD_DELAY_PULSE);
 	}
 		
-	setbit(DDRD,7,1);setbit(PORTD,7,byte&8);//d3
-	setbit(DDRC,0,1);setbit(PORTC,0,byte&4);
-	setbit(DDRC,1,1);setbit(PORTC,1,byte&2);
-	setbit(DDRC,6,1);setbit(PORTC,6,byte&1);
+	setbit(D7_DDR, D7_PIN,1); setbit(D7_PORT, D7_PIN,byte&8);//d7
+	setbit(D6_DDR, D6_PIN,1); setbit(D6_PORT, D6_PIN,byte&4);
+	setbit(D5_DDR, D5_PIN,1); setbit(D5_PORT, D5_PIN,byte&2);
+	setbit(D4_DDR, D4_PIN,1); setbit(D4_PORT, D4_PIN,byte&1);
 	
 	_delay_us(LCD_DELAY_PULSE);
 	setbit(E_PORT, E_PIN, 1);//e
