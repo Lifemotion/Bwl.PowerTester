@@ -332,33 +332,21 @@ void automatic_mode(float drop_level)
 
 int main(void)
 {
-	/*power_open(1);
-	set_relay(1);_delay_ms(2000);
-	set_relay(2);_delay_ms(2000);
-	set_relay(4);_delay_ms(2000);
-	set_relay(8);_delay_ms(2000);
-	set_relay(16);_delay_ms(2000);
-	set_relay(32);_delay_ms(2000);
-	set_relay(64);_delay_ms(2000);
-	set_relay(128);_delay_ms(2000);
-	set_relay(256);_delay_ms(2000);
-	set_relay(0);
-	*/
-	//get_button_1();
-	//get_button_2();
 	//wdt_enable(WDTO_8S);
 	//uart_init_withdivider(UART_USB,UBRR_VALUE);
 	//sserial_find_bootloader();
 	//sserial_set_devname(DEV_NAME);
 	//sserial_append_devname(15,12,__DATE__);
 	//sserial_append_devname(27,8,__TIME__);
+	
 	power_open(1);
-	_delay_ms(1000);
+	_delay_ms(2000);
 	lcd_init();
 	string_clear();
 	string_add_string("//Pwr Tester 1.0 ");
 	copy_string_to_line(1);
 	lcd_writebuffer();
+	
 	while(1)
 	{
 		if (get_button_1())
@@ -368,6 +356,9 @@ int main(void)
 		if (get_button_2())
 		{
 			automatic_mode(0.95);
+		}
+		if(get_button_3()){
+			power_open(0);
 		}
 		wdt_reset();
 	}
