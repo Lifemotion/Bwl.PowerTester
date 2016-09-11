@@ -1,0 +1,11 @@
+1   ќм : http://www.compel.ru/infosheet/YAG/SQP500JB-1R
+2   ќм : http://www.compel.ru/infosheet/YAG/SQP500JB-2R
+3.9 ќм : http://www.compel.ru/infosheet/YAG/SQP500JB-3R9
+8.2 ќм : http://www.compel.ru/infosheet/YAG/SQP500JB-8R2
+16  ќм : 8.2 + 8.2
+34  ќм : 68 || 68
+68  ќћ : http://www.compel.ru/infosheet/YAG/KNP500JT-91-68R
+136 ќћ : 68 + 68
+220 ќм : http://www.compel.ru/infosheet/YAG/KNP500JT-91-220R
+
+крепление батаре€ крона : BH-9VP 
