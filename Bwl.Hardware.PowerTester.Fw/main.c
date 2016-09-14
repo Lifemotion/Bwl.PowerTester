@@ -1,109 +1,12 @@
-#define BAUD 9600
-
-#define DEV_NAME "BwlPowTst1.0      "
-#define ADC_ADJ ADC_ADJUST_RIGHT
-#define ADC_REF ADC_REFS_INTERNAL_1_1
-#define ADC_CLK ADC_PRESCALER_128
+#define DEV_NAME "BwlPowTst2-FW1.0      "
 
 #include "board/board.h"
-#include "winstar1602.h"
-#include "refs-avr/bwl_ir.h"
-#include "refs-avr/bwl_uart.h"
-#include "refs-avr/bwl_simplserial.h"
-#include "refs-avr/bwl_adc.h"
+#include "refs-avr/winstar1602.h"
 #include "refs-avr/strings.h"
 
-#include <util/setbaud.h>
-
-void sserial_send_start(unsigned char portindex){};//{if (portindex==UART_485)	{DDRB|=(1<<6);PORTB|=(1<<6);}}
-
-void sserial_send_end(unsigned char portindex){};//{if (portindex==UART_485)	{DDRB|=(1<<6);PORTB&=(~(1<<6));}}
-
-void sserial_process_request(unsigned char portindex)
-{
-	//read buttons
-	if (sserial_request.command==1)
-	{
-		sserial_response.result=128+sserial_request.command;
-		sserial_response.datalength=8;
-		sserial_send_response();
-	}
-	//all adc
-	if (sserial_request.command==12)
-	{
-		byte count=			sserial_request.data[1];
-		adc_init(0,ADC_ADJ,ADC_REF,ADC_CLK);	int result0=adc_read_average(count);
-		adc_init(1,ADC_ADJ,ADC_REF,ADC_CLK);	int result1=adc_read_average(count);
-		adc_init(2,ADC_ADJ,ADC_REF,ADC_CLK);	int result2=adc_read_average(count);
-		adc_init(3,ADC_ADJ,ADC_REF,ADC_CLK);	int result3=adc_read_average(count);
-		adc_init(4,ADC_ADJ,ADC_REF,ADC_CLK);	int result4=adc_read_average(count);
-		adc_init(5,ADC_ADJ,ADC_REF,ADC_CLK);	int result5=adc_read_average(count);
-		adc_init(6,ADC_ADJ,ADC_REF,ADC_CLK);	int result6=adc_read_average(count);
-		adc_init(7,ADC_ADJ,ADC_REF,ADC_CLK);	int result7=adc_read_average(count);
-		
-		sserial_response.result=128+sserial_request.command;
-		sserial_response.datalength=16;
-		sserial_response.data[0]=result0>>8;
-		sserial_response.data[1]=result0&255;
-		sserial_response.data[2]=result1>>8;
-		sserial_response.data[3]=result1&255;
-		sserial_response.data[4]=result2>>8;
-		sserial_response.data[5]=result2&255;
-		sserial_response.data[6]=result3>>8;
-		sserial_response.data[7]=result3&255;
-		sserial_response.data[8]=result4>>8;
-		sserial_response.data[9]=result4&255;
-		sserial_response.data[10]=result5>>8;
-		sserial_response.data[11]=result5&255;
-		sserial_response.data[12]=result6>>8;
-		sserial_response.data[13]=result6&255;
-		sserial_response.data[14]=result7>>8;
-		sserial_response.data[15]=result7&255;
-		sserial_send_response();
-	}
-}
-
-float adc_get_voltage()
-{
-	adc_init(4,ADC_ADJ,ADC_REF,ADC_CLK);
-	float result0=adc_read_average_float(64);
-	float result=result0*1.1/1024.0*69.0;
-	return result;
-}
-
-float adc_get_current()
-{
-	adc_init(3,ADC_ADJ,ADC_REF,ADC_CLK);
-	float result0=adc_read_average_float(64);
-	float result=result0*1.1/1024.0/0.01;
-	return result;
-}
-
-void power_open(unsigned char state)
-{
-	setbit(DDRA,5,1);setbit(PORTA,5,state);
-}
-
-byte get_button_1()
-{
-	setbit(DDRD,4,0);
-	setbit(PORTD,4,1);
-	return getbit(PIND,4)==0;
-}
-
-byte get_button_2()
-{
-	setbit(DDRD,3,0);
-	setbit(PORTD,3,1);
-	return getbit(PIND,3)==0;
-}
-
-byte get_button_3()
-{
-	setbit(DDRD,5,0);
-	setbit(PORTD,5,1);
-	return getbit(PIND,5)==0;
-}
+#include "relays.h"
+#include "sserial.h"
+#include "adc.h"
 
 void copy_string_to_line(char line)
 {
@@ -123,42 +26,6 @@ void copy_string_to_line(char line)
 	}
 	
 
-}
-
-void set_relay(int relay_code)
-{
-	if (relay_code<0) {relay_code=0;}
-	setbit(DDRB,6,1);setbit(PORTB,6,relay_code&1);//200
-	setbit(DDRB,3,1);setbit(PORTB,3,relay_code&2);//100
-	setbit(DDRB,0,1);setbit(PORTB,0,relay_code&4);//62
-	setbit(DDRD,6,1);setbit(PORTD,6,relay_code&8);//32
-	setbit(DDRB,7,1);setbit(PORTB,7,relay_code&16);//16
-	setbit(DDRB,5,1);setbit(PORTB,5,relay_code&32);//10
-	setbit(DDRB,4,1);setbit(PORTB,4,relay_code&64);//4.7
-	setbit(DDRB,2,1);setbit(PORTB,2,relay_code&128);//2
-	setbit(DDRB,1,1);setbit(PORTB,1,relay_code&256);//1
-}
-
-float relay_get_resistance(int relay_code)
-{
-	float rev_sum=0.0;
-	if (relay_code&1) {rev_sum+=1.0/214.1;}
-	if (relay_code&2) {rev_sum+=1.0/147.1;}
-	if (relay_code&4) {rev_sum+=1.0/67.1;}
-	if (relay_code&8) {rev_sum+=1.0/30.6;}
-	if (relay_code&16) {rev_sum+=1.0/12.1;}
-	if (relay_code&32) {rev_sum+=1.0/8.2;}
-	if (relay_code&64) {rev_sum+=1.0/3.9;}
-	if (relay_code&128) {rev_sum+=1.0/2.0;}
-	if (relay_code&256) {rev_sum+=1.0/1.0;}
-	if (rev_sum==0.0)
-	{
-		return -1;
-	}else
-	{
-		float resistance= 1.0/rev_sum;
-		return resistance;
-	}
 }
 
 void show_voltage_current(float volt, float current)
@@ -228,6 +95,7 @@ void show_resistanse_voltage_current(float resistance, float voltage)
 float meashure_voltage(int relay_code)
 {
 	set_relay(relay_code);
+	var_delay_ms(10);
 	float result=adc_get_voltage();
 	set_relay(0);
 	return result;
@@ -237,14 +105,14 @@ void manual_mode()
 {
 	static int manual_relaycode=0;
 	
-	if (get_button_1())
+	if (get_button_up())
 	{
 		manual_relaycode+=1;
 		show_resistanse(manual_relaycode);
 		_delay_ms(200);
 	}
 	
-	if (get_button_2())
+	if (get_button_right())
 	{
 		float volt=meashure_voltage(manual_relaycode);
 		float resist=relay_get_resistance(manual_relaycode);
@@ -299,11 +167,11 @@ void automatic_mode(float drop_level)
 		volt=meashure_voltage(relay);
 		volt=meashure_voltage(relay);
 		resist=relay_get_resistance(relay);
-		_delay_ms(50);
+		wdt_reset();
 	}
 	//float curr=last_volt/last_resist;
 	//float pow=last_volt*curr;
-		
+	
 	float curr=volt/resist;
 	float pow=volt*curr;
 	if (relay<500)
@@ -330,36 +198,50 @@ void automatic_mode(float drop_level)
 	lcd_writebuffer();
 }
 
+void show_device_info()
+{
+	string_clear();
+	string_add_string("Power Tester 2.0 ");
+	copy_string_to_line(1);
+	string_clear();
+	string_add_string((char *)sserial_devname);
+	copy_string_to_line(2);
+	lcd_writebuffer();
+}
+
 int main(void)
 {
-	//wdt_enable(WDTO_8S);
-	//uart_init_withdivider(UART_USB,UBRR_VALUE);
-	//sserial_find_bootloader();
-	//sserial_set_devname(DEV_NAME);
-	//sserial_append_devname(15,12,__DATE__);
-	//sserial_append_devname(27,8,__TIME__);
-	
-	power_open(1);
-	_delay_ms(2000);
+	start:
+	wdt_enable(WDTO_8S);
+	board_init();
+	sserial_init();
 	lcd_init();
-	string_clear();
-	string_add_string("//Pwr Tester 1.0 ");
-	copy_string_to_line(1);
-	lcd_writebuffer();
+	show_device_info();
 	
 	while(1)
 	{
-		if (get_button_1())
+		if (power_state==1)
 		{
-			automatic_mode(0.9);
-		}
-		if (get_button_2())
+			
+			if (get_button_up())
+			{
+				automatic_mode(0.9);
+			}
+			if (get_button_right())
+			{
+				automatic_mode(0.95);
+			}
+			if(get_button_down()){
+				power_key(0);
+			}
+		}else
 		{
-			automatic_mode(0.95);
-		}
-		if(get_button_3()){
-			power_open(0);
+			if (get_button_up())
+			{
+				goto start;
+			}
 		}
 		wdt_reset();
+		sserial_poll_uart(0);
 	}
 }

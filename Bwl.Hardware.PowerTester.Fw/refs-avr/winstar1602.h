@@ -1,6 +1,5 @@
 #pragma once
-
-#include "board/board.h"
+#include <avr/io.h>
 
 #define RS_PORT PORTA
 #define D7_PORT PORTD
@@ -40,3 +39,7 @@ void lcd_init();
 
 //Call to write buffer (lcd_line_X) to display
 void lcd_writebuffer();
+
+//Need to be realized external
+void var_delay_ms(int ms);
+void var_delay_us(int ms);

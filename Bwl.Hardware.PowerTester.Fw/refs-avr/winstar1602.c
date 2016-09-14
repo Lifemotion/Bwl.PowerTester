@@ -1,5 +1,7 @@
 #include "winstar1602.h"
-
+#define getbit(port, bit)		((port) &   (1 << (bit)))
+#define setbit(port,bit,val)	{if ((val)) {(port)|= (1 << (bit));} else {(port) &= ~(1 << (bit));}}
+	
 unsigned char lcd_line_1[LCD_LINE_LENGTH]={};
 unsigned char lcd_line_2[LCD_LINE_LENGTH]={};
 
@@ -31,11 +33,11 @@ void _lcd_write(char rs, unsigned char byte, char repeatfirst)
 	setbit(D5_DDR, D5_PIN,1); setbit(D5_PORT, D5_PIN,byte&32);
 	setbit(D4_DDR, D4_PIN,1); setbit(D4_PORT, D4_PIN,byte&16);
 	
-	_delay_us(LCD_DELAY_PULSE);
+	var_delay_us(LCD_DELAY_PULSE);
 	setbit(E_PORT, E_PIN, 1);//e
-	_delay_us(LCD_DELAY_PULSE);
+	var_delay_us(LCD_DELAY_PULSE);
 	setbit(E_PORT, E_PIN, 0);//e
-	_delay_us(LCD_DELAY_PULSE);
+	var_delay_us(LCD_DELAY_PULSE);
 	
 	if (repeatfirst)
 	{
@@ -44,25 +46,25 @@ void _lcd_write(char rs, unsigned char byte, char repeatfirst)
 		setbit(D5_DDR, D5_PIN,1); setbit(D5_PORT, D5_PIN,byte&32);
 		setbit(D4_DDR, D4_PIN,1); setbit(D4_PORT, D4_PIN,byte&16);
 	
-		_delay_us(LCD_DELAY_PULSE);
+		var_delay_us(LCD_DELAY_PULSE);
 		setbit(E_PORT, E_PIN, 1);//e
-		_delay_us(LCD_DELAY_PULSE);
+		var_delay_us(LCD_DELAY_PULSE);
 		setbit(E_PORT, E_PIN, 0);//e		
-		_delay_us(LCD_DELAY_PULSE);
+		var_delay_us(LCD_DELAY_PULSE);
 	}
 		
-	setbit(D7_DDR, D7_PIN,1); setbit(D7_PORT, D7_PIN,byte&8);//d7
+	setbit(D7_DDR, D7_PIN,1); setbit(D7_PORT, D7_PIN,byte&8);//d3
 	setbit(D6_DDR, D6_PIN,1); setbit(D6_PORT, D6_PIN,byte&4);
 	setbit(D5_DDR, D5_PIN,1); setbit(D5_PORT, D5_PIN,byte&2);
 	setbit(D4_DDR, D4_PIN,1); setbit(D4_PORT, D4_PIN,byte&1);
 	
-	_delay_us(LCD_DELAY_PULSE);
+	var_delay_us(LCD_DELAY_PULSE);
 	setbit(E_PORT, E_PIN, 1);//e
-	_delay_us(LCD_DELAY_PULSE);
+	var_delay_us(LCD_DELAY_PULSE);
 	setbit(E_PORT, E_PIN, 0);//e
-	_delay_us(LCD_DELAY_PULSE);
+	var_delay_us(LCD_DELAY_PULSE);
 	
-	_delay_us(LCD_DELAY_SYMBOLS);
+	var_delay_us(LCD_DELAY_SYMBOLS);
 }
 
 void lcd_setup()
@@ -70,30 +72,30 @@ void lcd_setup()
 	//_lcd_write(0,0b00001000,0);
 
 	//0 0 1 0 0 0 1 0 N F x x
-	_lcd_write(0,0b00101000,1);_delay_us(LCD_DELAY_INIT);
+	_lcd_write(0,0b00101000,1);var_delay_us(LCD_DELAY_INIT);
 	//0 0 0 0 1 D C B on off
-	_lcd_write(0,0b00001100,0);_delay_us(LCD_DELAY_INIT);	
+	_lcd_write(0,0b00001100,0);var_delay_us(LCD_DELAY_INIT);	
 	//0 0 0 0 0 0 0 1 clear
-	_lcd_write(0,0b00000001,0);_delay_us(LCD_DELAY_INIT);	
+	_lcd_write(0,0b00000001,0);var_delay_us(LCD_DELAY_INIT);	
 	//0 0 0 0 0
-	_lcd_write(0,0b00000010,0);_delay_us(LCD_DELAY_INIT);	
+	_lcd_write(0,0b00000010,0);var_delay_us(LCD_DELAY_INIT);	
 	//0 0 0 0 0 1 i/d s/h
-	_lcd_write(0,0b00000110,0);_delay_us(LCD_DELAY_INIT);
-//_delay_ms(1000);
+	_lcd_write(0,0b00000110,0);var_delay_us(LCD_DELAY_INIT);
+	//_delay_ms(1000);
 }
 
 void lcd_init()
 {
-	_delay_ms(500);
+	var_delay_ms(500);
 	lcd_setup();
 }
 
 void lcd_writebuffer()
 {
 	//0 0 0 0 0 0 0 1 clear
-	_lcd_write(0,0b00000001,0);_delay_us(LCD_DELAY_INIT);
+	//_lcd_write(0,0b00000001,0);_delay_us(LCD_DELAY_INIT);
 	//0 0 0 0 0
-	_lcd_write(0,0b00000010,0);_delay_us(LCD_DELAY_INIT);
+	_lcd_write(0,0b00000010,0);var_delay_us(LCD_DELAY_INIT);
 	
 	for (int i=0; i<LCD_LINE_LENGTH; i++) _lcd_write(1,charTable[lcd_line_1[i]],0);
 	
